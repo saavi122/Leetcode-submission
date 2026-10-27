@@ -14,45 +14,37 @@ class Solution {
     }
 
     public List<String> addOperators(String num, int target) {
-        List<String> result = new ArrayList<>();
-        if (num == null || num.length() == 0) {
-            return result;
-        }
-
-        Queue<State> queue = new LinkedList<>();
+        int n = num.length();
+        List<String> res = new ArrayList<>();
+        Queue<State> q = new LinkedList<>();
+        if(num == null || n == 0) return res;
         
-        for (int i = 0; i < num.length(); i++) {
-            if (i > 0 && num.charAt(0) == '0') {
-                break;
-            }
-            long val = Long.parseLong(num.substring(0, i + 1));
-            queue.add(new State(i + 1, val, val, num.substring(0, i + 1)));
+        for(int i = 0; i<n; i++){
+            if (i > 0 && num.charAt(0) == '0') break;
+            long val = Long.parseLong(num.substring(0, i+1));
+            q.add(new State(i+1, val, val, num.substring(0, i+1)));
         }
 
-        while (!queue.isEmpty()) {
-            State curr = queue.poll();
+        while(!q.isEmpty()){
+            State curr = q.poll();
 
-            if (curr.index == num.length()) {
-                if (curr.eval == target) {
-                    result.add(curr.path);
-                }
+            if(curr.index == n){
+                if (curr.eval == target) res.add(curr.path);
                 continue;
             }
 
-            for (int i = curr.index; i < num.length(); i++) {
-                if (i > curr.index && num.charAt(curr.index) == '0') {
-                    break;
-                }
+            for(int i = curr.index; i<n; i++) {
+                if (i > curr.index && num.charAt(curr.index) == '0') break;
 
-                long currentVal = Long.parseLong(num.substring(curr.index, i + 1));
-                String currentStr = num.substring(curr.index, i + 1);
+                long curVal = Long.parseLong(num.substring(curr.index, i + 1));
+                String curStr = num.substring(curr.index, i + 1);
 
-                queue.add(new State(i + 1, curr.eval + currentVal, currentVal, curr.path + "+" + currentStr));
-                queue.add(new State(i + 1, curr.eval - currentVal, -currentVal, curr.path + "-" + currentStr));
-                queue.add(new State(i + 1, curr.eval - curr.multed + (curr.multed * currentVal), curr.multed * currentVal, curr.path + "*" + currentStr));
+                q.add(new State(i + 1, curr.eval + curVal, curVal, curr.path + "+" + curStr));
+                q.add(new State(i + 1, curr.eval - curVal, -curVal, curr.path + "-" + curStr));
+                q.add(new State(i + 1, curr.eval - curr.multed + (curr.multed * curVal), curr.multed * curVal, curr.path + "*" + curStr));
             }
         }
 
-        return result;
+        return res;
     }
 }
