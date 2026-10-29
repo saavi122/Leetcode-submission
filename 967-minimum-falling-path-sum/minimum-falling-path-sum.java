@@ -1,24 +1,26 @@
 class Solution {
     public int minFallingPathSum(int[][] matrix) {
-        int n = matrix.length;
-        int[][] dp = new int[n][n];
-        int ans = Integer.MAX_VALUE;
-        for(int i = 0; i<n; i++){
-            Arrays.fill(dp[i],Integer.MAX_VALUE);
+       // state = dp[i] min sum to reach the last row
+       int n = matrix.length;
+       int sum = 0;
+       int minsum = 0;
+
+       int[][] dp = new int[n][n];
+
+        for(int i = 0; i<n; i++) dp[0][i] = matrix[0][i];
+
+        for(int i = 1; i<n; i++){
+            for(int j = 0; j<n; j++){
+                int min = dp[i-1][j];
+                if(j>0) min = Math.min(min,dp[i-1][j-1]);
+                if(j < n-1) min = Math.min(min,dp[i-1][j+1]);
+                dp[i][j] = matrix[i][j]+min;
+            }
         }
+        int ans= Integer.MAX_VALUE;
         for(int i = 0; i<n; i++){
-            ans = Math.min(ans,path(matrix,n-1,i,dp));
+            ans = Math.min(ans,dp[n-1][i]);
         }
-        return ans;
-    }
-    public int path(int[][] mat,int i, int j, int[][] dp){
-        if(j < 0 || j>=mat.length) return Integer.MAX_VALUE;
-        if(i == 0) return mat[i][j];
-        if(dp[i][j]!=Integer.MAX_VALUE) return dp[i][j];
-        int down = path(mat,i-1,j,dp);
-        int downl = path(mat,i-1,j-1,dp);
-        int downr = path(mat,i-1,j+1,dp);
-        int min = Math.min(down,Math.min(downl,downr));
-        return dp[i][j] = mat[i][j] + min;
+       return ans;
     }
 }
