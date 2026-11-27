@@ -2,20 +2,44 @@ class Solution {
     public int numDistinct(String s, String t) {
         int n = s.length();
         int m = t.length();
-
-        long[] dp = new long[m+1];
-        dp[0] = 1;
-
-        for (int i = 0; i<n; i++) {
-            for (int j = m; j >= 1; j--) {
-                if (s.charAt(i) == t.charAt(j-1)) {
-                    dp[j] += dp[j-1];
-                }
-            }
+        long[][] dp = new long[n][m];
+        for (long[] row : dp) {
+            Arrays.fill(row, Long.MIN_VALUE);
         }
-        return (int) dp[m];
+        return (int) dfs(0, 0, s, t, dp);
+    }
+
+    private long dfs(int i, int j, String s, String t, long[][] dp) {
+        if (j == t.length()) return 1L;
+        if (i == s.length()) return 0L;
+        if (dp[i][j] != Long.MIN_VALUE) return dp[i][j];
+
+        long ways = dfs(i+1, j, s, t, dp);
+        if (s.charAt(i) == t.charAt(j)) {
+            ways += dfs(i+1, j+1, s, t, dp);
+        }
+        return dp[i][j] = ways;
     }
 }
+
+// class Solution {
+//     public int numDistinct(String s, String t) {
+//         int n = s.length();
+//         int m = t.length();
+
+//         long[] dp = new long[m+1];
+//         dp[0] = 1;
+
+//         for (int i = 0; i<n; i++) {
+//             for (int j = m; j >= 1; j--) {
+//                 if (s.charAt(i) == t.charAt(j-1)) {
+//                     dp[j] += dp[j-1];
+//                 }
+//             }
+//         }
+//         return (int) dp[m];
+//     }
+// }
 
 // class Solution {
 //     public int numDistinct(String s, String t) {
